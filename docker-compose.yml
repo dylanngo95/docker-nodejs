@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:1.16.1
+    container_name: nginx-nodejs
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - node
+    networks:
+      - app
+    volumes:
+      - ./conf/nginx/local.crt:/var/www/ssl/local.crt
+      - ./conf/nginx/local.key:/var/www/ssl/local.key
+      - ./conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./log/nginx:/var/log/nginx
+      - ${PROJECT_PATH}:/var/www/html
+
+  node:
+    image: dylanops/nodejs:16.4.2
+    build: 'docker'
+    container_name: node
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - app
+    extra_hosts:
+      - "pim.local:host-gateway"
+    tty: true
+    volumes:
+      - ${PROJECT_PATH}:/var/www/html
+
+networks:
+  app:
+    driver: bridge
