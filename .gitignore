@@ -1,4 +1,5 @@
 .env
 log
 conf/nginx
-~conf/nginx/README.md
+!conf/nginx/README.md
+!conf/nginx/default.conf.sample
